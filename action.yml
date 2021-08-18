@@ -1,0 +1,21 @@
+name: 'Deploy app to Shopify Oxygen'
+branding:
+  icon: shopping-bag
+  colour: green
+description: 'Deploy JavaScript applications to Shopify Oxygen directly from GitHub'
+inputs:
+  oxygen_deployment_token:
+    description: The JWT deployment token
+    required: true
+  oxygen_dms_address:
+    description: The Oxygen DMS address as in hostname-or-IPv4:port
+    default: oxygen-dms.shopifysvc.com
+  oxygen_worker_file:
+    description: The name of the worker file
+    default: dist/worker/worker.js
+  oxygen_assets_dir:
+    description: The name of the assets directory
+    default: dist/client/assets
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
