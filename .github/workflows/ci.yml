@@ -1,0 +1,53 @@
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+name: oxygenctl Action CI
+
+on: [push]
+
+jobs:
+  build:
+    name: Deploys a hydrogen app to Oxygen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: "charlespwd/snowdevil"
+          ref: "main"
+          path: "./hydrogen-app"
+          token: ${{ secrets.PAT }}
+
+      # - name: Create config file
+      #   run: |
+      #     cd hydrogen-app
+      #     shopify.config.js <<-END
+      #       ${{ secrets.SHOPIFY_CONFIG }}
+      #     END
+      #     cat shopify.config.js
+
+      # Install dependencies
+      - name: Setup node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          check-latest: true
+      - name: Get yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies + build
+        run: |
+          cd hydrogen-app
+          yarn
+          yarn build
+
+      - name: oxygenctl Deploy
+        uses: ./
+        id: oxygenctl-action
+        with:
+          oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
+          path: ./hydrogen-app

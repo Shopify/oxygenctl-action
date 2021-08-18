@@ -1,6 +1,10 @@
 #!/bin/sh
 set -eou pipefail
 
+if [[ -n "$INPUT_PATH" ]]; then
+  cd "$INPUT_PATH"
+fi
+
 export OXYGEN_DEPLOYMENT_TOKEN="$INPUT_OXYGEN_DEPLOYMENT_TOKEN"
 
 # Read store domain from Hydrogen configuration file
