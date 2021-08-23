@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -eou pipefail
+
+action="oxygenctl-action"
+root="$HOME/src/github.com/Shopify"
+dest="$root/hydrogen-template/.github/actions/$action"
+src="$root/$action"
+
+log_run() {
+  echo "$@" 1>&2
+  "$@"
+}
+
+echo "Making sure we're on main in $root/hydrogen-template" 1>&2
+(cd "$root/hydrogen-template" && git fetch origin main && git checkout main && git reset --hard origin/main)
+
+log_run rm -rf "$dest"
+log_run mkdir "$dest"
+
+# abusing the fact that dotfiles are not expanded by glob
+log_run cp -R $src/* "$dest"
+
+log_run cd "$root/hydrogen-template"
+now="$(date +%Y-%m-%d-%H-%M)"
+branch="update/$action-$now"
+log_run git checkout -b "$branch"
+log_run git add ".github/actions/$action"
+log_run git commit -m "$action update - $now"
+log_run git push origin main $branch
+
+if which gh &> /dev/null; then
+  gh pr create --base=main --head="$branch"
+fi
