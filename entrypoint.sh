@@ -15,8 +15,8 @@ oxygenctl --version
 oxygenctl deploy \
   --assets-dir "$INPUT_OXYGEN_ASSETS_DIR" \
   --worker-file "$INPUT_OXYGEN_WORKER_FILE" \
-  --dms-address "$INPUT_OXYGEN_DMS_ADDRESS" \
-  || true
+  --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
+
 
 # Hardcoded storefont name for now
 echo "::set-output name=url::https://"${GITHUB_SHA:0:12}"--oxygen-test-shop.myshopify.dev"
