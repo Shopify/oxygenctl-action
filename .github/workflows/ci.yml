@@ -53,3 +53,9 @@ jobs:
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
           oxygen_dms_address: ${{ secrets.OXYGEN_DMS_ADDRESS }}
           path: ./hydrogen-app
+
+      - name: Output check
+        run: |
+          url='${{ steps.oxygenctl-action.outputs.url }}'
+          echo $url
+          curl $url -sS

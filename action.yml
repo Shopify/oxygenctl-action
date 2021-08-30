@@ -18,6 +18,9 @@ inputs:
     default: dist/client/assets
   path:
     description: The root path of the project to deploy
+outputs:
+  url:
+    description: URL of the deployment
 runs:
   using: 'docker'
   image: 'Dockerfile'
