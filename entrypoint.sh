@@ -12,11 +12,12 @@ export OXYGEN_DEPLOYMENT_TOKEN="$INPUT_OXYGEN_DEPLOYMENT_TOKEN"
 oxygenctl --version
 
 # Temporarily ignoring that successful deploys result in 502s, that's why we || true
-oxygenctl deploy \
-  --assets-dir "$INPUT_OXYGEN_ASSETS_DIR" \
-  --worker-file "$INPUT_OXYGEN_WORKER_FILE" \
-  --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
-
+preview_url="$(
+  oxygenctl deploy \
+    --assets-dir "$INPUT_OXYGEN_ASSETS_DIR" \
+    --worker-file "$INPUT_OXYGEN_WORKER_FILE" \
+    --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
+)"
 
 # Hardcoded storefont name for now
-echo "::set-output name=url::https://"${GITHUB_SHA:0:12}"--oxygen-test-shop.myshopify.dev"
+echo "::set-output name=url::$preview_url"
