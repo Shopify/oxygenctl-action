@@ -15,7 +15,7 @@ inputs:
     default: dist/worker/worker.js
   oxygen_assets_dir:
     description: The name of the assets directory
-    default: dist/client
+    default: dist/client/assets
   path:
     description: The root path of the project to deploy
 outputs:
