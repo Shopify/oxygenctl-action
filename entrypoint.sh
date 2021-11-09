@@ -8,6 +8,8 @@ if [[ -n "$INPUT_PATH" ]]; then
 fi
 
 export OXYGEN_DEPLOYMENT_TOKEN="$INPUT_OXYGEN_DEPLOYMENT_TOKEN"
+export OXYGEN_COMMIT_MESSAGE="$INPUT_COMMIT_MESSAGE"
+export OXYGEN_COMMIT_TIMESTAMP="$INPUT_COMMIT_TIMESTAMP"
 
 oxygenctl --version
 
@@ -20,4 +22,6 @@ preview_url="$(
 )"
 
 # Hardcoded storefont name for now
+echo $OXYGEN_COMMIT_MESSAGE
+echo $OXYGEN_COMMIT_TIMESTAMP
 echo "::set-output name=url::$preview_url"
