@@ -18,6 +18,14 @@ inputs:
     default: dist/client/assets
   path:
     description: The root path of the project to deploy
+  commit_message:
+    description: The message of the commit
+    default: ${{ github.event.head_commit.message }}
+    required: true
+  commit_timestamp:
+    description: The timestamp of the commit
+    default: ${{ github.event.head_commit.timestamp }}
+    required: true
 outputs:
   url:
     description: URL of the deployment
