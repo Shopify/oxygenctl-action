@@ -22,6 +22,4 @@ preview_url="$(
 )"
 
 # Hardcoded storefont name for now
-echo $OXYGEN_COMMIT_MESSAGE
-echo $OXYGEN_COMMIT_TIMESTAMP
 echo "::set-output name=url::$preview_url"
