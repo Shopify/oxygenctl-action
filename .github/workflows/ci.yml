@@ -52,6 +52,8 @@ jobs:
         with:
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
           oxygen_dms_address: ${{ secrets.OXYGEN_DMS_ADDRESS }}
+          commit_message: ${{ github.event.head_commit.message }}
+          commit_timestamp: ${{ github.event.head_commit.timestamp }}
           path: ./hydrogen-app
 
       - name: Output check
