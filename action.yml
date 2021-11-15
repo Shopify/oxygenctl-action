@@ -4,6 +4,14 @@ branding:
   colour: green
 description: 'Deploy JavaScript applications to Shopify Oxygen directly from GitHub'
 inputs:
+  commit_message:
+    description: The message of the commit
+    default: ${{ github.event.head_commit.message }}
+    required: true
+  commit_timestamp:
+    description: The timestamp of the commit
+    default: ${{ github.event.head_commit.timestamp }}
+    required: true
   oxygen_deployment_token:
     description: The JWT deployment token
     required: true
@@ -18,6 +26,10 @@ inputs:
     default: dist/client/assets
   path:
     description: The root path of the project to deploy
+  workflow_run_id:
+    description: The id of the workflow run
+    default: ${{ github.run_id }}
+    required: true
 outputs:
   url:
     description: URL of the deployment

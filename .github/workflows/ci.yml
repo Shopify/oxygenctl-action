@@ -50,11 +50,12 @@ jobs:
         uses: ./
         id: oxygenctl-action
         with:
-          oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
-          oxygen_dms_address: ${{ secrets.OXYGEN_DMS_ADDRESS }}
           commit_message: ${{ github.event.head_commit.message }}
           commit_timestamp: ${{ github.event.head_commit.timestamp }}
+          oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
+          oxygen_dms_address: ${{ secrets.OXYGEN_DMS_ADDRESS }}
           path: ./hydrogen-app
+          workflow_run_id: ${{ github.run_id }}
 
       - name: Output check
         run: |
