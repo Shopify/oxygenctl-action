@@ -19,7 +19,7 @@ jobs:
       - name: Create a hydrogen app
         run: |
           npm --version
-          npm create @shopify/hydrogen -- --template hydrogen hydrogen-app
+          npm init hydrogen-app@latest -- --template hydrogen hydrogen-app
 
       - name: Create config file
         run: |
@@ -40,11 +40,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      - name: Set branch name
+        shell: bash
+        run: |
+          echo "::set-output name=BRANCH_NAME::${GITHUB_REF##*/}"
+        id: set_branch
+
+      - name: Set asset base URL
+        shell: bash
+        run: |
+          # This corresponds with the method that Oxygen uses to compute the
+          # deployment ID. Changing this will result in incorrect asset URLs.
+          export OXYGEN_STOREFRONT_HASH=`echo -n "${{ secrets.OXYGEN_SHOP_ID }}:${{ secrets.OXYGEN_STOREFRONT_ID }}" | shasum -a 256 | awk '{ print $1 }'`
+          export OXYGEN_DEPLOYMENT_ID=`echo -n "${OXYGEN_STOREFRONT_HASH}:${{ steps.set_branch.outputs.BRANCH_NAME }}:${{ github.event.head_commit.id }}" | shasum -a 256 | awk '{ print substr($1,1,12) }'`
+          echo "::set-output name=BASE_URL::https://cdn.shopify.com/oxygen/${{ secrets.OXYGEN_SHOP_ID }}/${{ secrets.OXYGEN_STOREFRONT_ID }}/${OXYGEN_DEPLOYMENT_ID}/"
+        id: base_url
+
       - name: Install dependencies + build
         run: |
           cd hydrogen-app
           yarn
-          yarn build
+          HYDROGEN_ASSET_BASE_URL=${{ steps.base_url.outputs.BASE_URL }} yarn build
 
       - name: oxygenctl Deploy
         uses: ./

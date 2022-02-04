@@ -18,12 +18,12 @@ inputs:
   oxygen_dms_address:
     description: The Oxygen DMS address as in hostname-or-IPv4:port
     default: oxygen-dms.shopifysvc.com
-  oxygen_worker_file:
-    description: The name of the worker file
-    default: dist/worker/worker.js
-  oxygen_assets_dir:
-    description: The name of the assets directory
-    default: dist/client/assets
+  oxygen_worker_dir:
+    description: The name of the directory containing the worker file
+    default: dist/worker
+  oxygen_client_dir:
+    description: The name of the directory with compiled client files
+    default: dist/client
   path:
     description: The root path of the project to deploy
   workflow_run_id:
