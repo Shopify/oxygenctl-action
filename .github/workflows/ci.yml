@@ -16,6 +16,12 @@ jobs:
           node-version: '16'
           check-latest: true
 
+      - name: Generate deployment ULID
+        id: deployment-id
+        run: |
+          npm i ulid
+          echo "::set-output name=ULID::$(npm exec ulid)"
+
       - name: Create a hydrogen app
         run: |
           npm --version
@@ -44,28 +50,25 @@ jobs:
         shell: bash
         run: |
           echo "::set-output name=BRANCH_NAME::${GITHUB_REF##*/}"
-        id: set_branch
+        id: set-branch
 
       - name: Set asset base URL
         shell: bash
         run: |
-          # This corresponds with the method that Oxygen uses to compute the
-          # deployment ID. Changing this will result in incorrect asset URLs.
-          export OXYGEN_STOREFRONT_HASH=`echo -n "${{ secrets.OXYGEN_SHOP_ID }}:${{ secrets.OXYGEN_STOREFRONT_ID }}" | shasum -a 256 | awk '{ print $1 }'`
-          export OXYGEN_DEPLOYMENT_ID=`echo -n "${OXYGEN_STOREFRONT_HASH}:${{ steps.set_branch.outputs.BRANCH_NAME }}:${{ github.event.head_commit.id }}" | shasum -a 256 | awk '{ print substr($1,1,12) }'`
-          echo "::set-output name=BASE_URL::https://cdn.shopify.com/oxygen/${{ secrets.OXYGEN_SHOP_ID }}/${{ secrets.OXYGEN_STOREFRONT_ID }}/${OXYGEN_DEPLOYMENT_ID}/"
-        id: base_url
+          echo "::set-output name=URL::https://cdn.shopify.com/oxygen/${{ secrets.OXYGEN_SHOP_ID }}/${{ secrets.OXYGEN_STOREFRONT_ID }}/${{ steps.deployment-id.outputs.ULID }}/"
+        id: base-url
 
       - name: Install dependencies + build
         run: |
           cd hydrogen-app
           yarn
-          HYDROGEN_ASSET_BASE_URL=${{ steps.base_url.outputs.BASE_URL }} yarn build
+          HYDROGEN_ASSET_BASE_URL=${{ steps.base-url.outputs.URL }} yarn build
 
       - name: oxygenctl Deploy
         uses: ./
         id: oxygenctl-action
         with:
+          deployment_id: ${{ steps.deployment-id.outputs.ULID }}
           commit_message: ${{ github.event.head_commit.message }}
           commit_timestamp: ${{ github.event.head_commit.timestamp }}
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}

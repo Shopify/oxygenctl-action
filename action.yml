@@ -4,6 +4,9 @@ branding:
   colour: green
 description: 'Deploy JavaScript applications to Shopify Oxygen directly from GitHub'
 inputs:
+  deployment_id:
+    description: A unique ID associated with each deployment
+    required: true
   commit_message:
     description: The message of the commit
     default: ${{ github.event.head_commit.message }}
