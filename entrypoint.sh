@@ -17,6 +17,7 @@ oxygenctl --version
 # Temporarily ignoring that successful deploys result in 502s, that's why we || true
 preview_url="$(
   oxygenctl deploy \
+    --id "$INPUT_DEPLOYMENT_ID" \
     --assets-dir "$INPUT_OXYGEN_CLIENT_DIR" \
     --worker-dir "$INPUT_OXYGEN_WORKER_DIR" \
     --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
