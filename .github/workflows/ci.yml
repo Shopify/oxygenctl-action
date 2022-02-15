@@ -46,12 +46,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Set branch name
-        shell: bash
-        run: |
-          echo "::set-output name=BRANCH_NAME::${GITHUB_REF##*/}"
-        id: set-branch
-
       - name: Set asset base URL
         shell: bash
         run: |
