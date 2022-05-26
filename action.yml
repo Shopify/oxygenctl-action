@@ -4,8 +4,14 @@ branding:
   colour: green
 description: 'Deploy JavaScript applications to Shopify Oxygen directly from GitHub'
 inputs:
-  deployment_id:
-    description: A unique ID associated with each deployment
+  shop_id:
+    description: The Shop ID
+    required: true
+  storefront_id:
+    description: The Storefront ID
+    required: true
+  build_command:
+    description: The build command to execute, sets OXYGEN_ASSET_BASE_URL during execution
     required: true
   commit_message:
     description: The message of the commit
