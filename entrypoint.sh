@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Bail with exit code = 1 if anything fails
-set -eou pipefail
+set -eu pipefail
 
 if [[ -n "$INPUT_PATH" ]]; then
   cd "$INPUT_PATH"
