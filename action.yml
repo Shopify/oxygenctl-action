@@ -43,5 +43,7 @@ outputs:
   url:
     description: URL of the deployment
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'composite'
+  steps:
+    - run: '${{ github.action_path }}/entrypoint.sh'
+      shell: 'bash'
