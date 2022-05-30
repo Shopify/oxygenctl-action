@@ -47,3 +47,5 @@ runs:
   steps:
     - run: '${{ github.action_path }}/entrypoint.sh'
       shell: 'bash'
+      env:
+        oxygen_deployment_token: ${{ inputs.oxygen_deployment_token }}

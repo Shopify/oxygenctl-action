@@ -1,12 +1,10 @@
-#!/bin/sh
-
 # Don't set -u before checking this input
-if [[ -n "$INPUT_PATH"]]; then
+if [[ -n "$INPUT_PATH" ]]; then
   cd "$INPUT_PATH"
 fi
 
-# Bail on non-zero exit status and if undefined variable is referenced
-set -eu
+# Bail on first non-zero exist status, and bail any referenced variable is unset.
+set -eu 
 
 export OXYGEN_DEPLOYMENT_TOKEN="$INPUT_OXYGEN_DEPLOYMENT_TOKEN"
 export OXYGEN_COMMIT_MESSAGE="$INPUT_COMMIT_MESSAGE"
