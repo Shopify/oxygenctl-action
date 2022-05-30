@@ -14,13 +14,13 @@ export OXYGEN_SHOP_ID="$INPUT_SHOP_ID"
 export OXYGEN_STOREFRONT_ID="$INPUT_STOREFRONT_ID"
 export OXYGEN_BUILD_COMMAND="$INPUT_BUILD_COMMAND"
 
-curdir = $(dirname $0)
+oxygenctl_bin="$(dirname $0)/oxygenctl"
 
-$curdir/oxygenctl --version
+$oxygenctl_bin --version
 
 # Temporarily ignoring that successful deploys result in 502s, that's why we || true
 preview_url="$(
-  $curdir/oxygenctl deploy \
+  $oxygenctl_bin deploy \
     --assets-dir "$INPUT_OXYGEN_CLIENT_DIR" \
     --worker-dir "$INPUT_OXYGEN_WORKER_DIR" \
     --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
