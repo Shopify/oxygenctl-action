@@ -35,7 +35,6 @@ inputs:
     default: dist/client
   path:
     description: The root path of the project to deploy
-    default: ""
   workflow_run_id:
     description: The id of the workflow run
     default: ${{ github.run_id }}
