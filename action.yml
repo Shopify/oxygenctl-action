@@ -42,10 +42,12 @@ inputs:
 outputs:
   url:
     description: URL of the deployment
+    value: ${{ steps.oxygenctl-action.outputs.url  }}
 runs:
   using: 'composite'
   steps:
     - run: '${{ github.action_path }}/entrypoint.sh'
+      id: 'oxygenctl-action'
       shell: 'bash'
       env:
         INPUT_SHOP_ID: ${{ inputs.shop_id }}
