@@ -11,7 +11,7 @@ inputs:
     description: The Storefront ID
     required: true
   build_command:
-    description: The build command to execute, sets OXYGEN_ASSET_BASE_URL during execution
+    description: The build command to execute; OXYGEN_ASSET_BASE_URL is available as a reference to Shopify's CDN for this command
     required: true
   commit_message:
     description: The message of the commit
