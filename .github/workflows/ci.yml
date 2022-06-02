@@ -46,29 +46,25 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Set asset base URL
-        shell: bash
-        run: |
-          echo "::set-output name=URL::https://cdn.shopify.com/oxygen/${{ secrets.OXYGEN_SHOP_ID }}/${{ secrets.OXYGEN_STOREFRONT_ID }}/${{ steps.deployment-id.outputs.ULID }}/"
-        id: base-url
-
-      - name: Install dependencies + build
+      - name: Install dependencies
+        id: 'install-dependencies'
         run: |
           cd hydrogen-app
           yarn
-          HYDROGEN_ASSET_BASE_URL=${{ steps.base-url.outputs.URL }} yarn build
 
       - name: oxygenctl Deploy
         uses: ./
         id: oxygenctl-action
         with:
-          deployment_id: ${{ steps.deployment-id.outputs.ULID }}
           commit_message: ${{ github.event.head_commit.message }}
           commit_timestamp: ${{ github.event.head_commit.timestamp }}
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
           oxygen_dms_address: ${{ secrets.OXYGEN_DMS_ADDRESS }}
+          shop_id: ${{ secrets.OXYGEN_SHOP_ID }}
+          storefront_id: ${{ secrets.OXYGEN_STOREFRONT_ID }}
           path: ./hydrogen-app
           workflow_run_id: ${{ github.run_id }}
+          build_command: "HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL yarn build"
 
       - name: Output check
         run: |

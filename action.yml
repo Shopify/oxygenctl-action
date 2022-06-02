@@ -4,8 +4,14 @@ branding:
   colour: green
 description: 'Deploy JavaScript applications to Shopify Oxygen directly from GitHub'
 inputs:
-  deployment_id:
-    description: A unique ID associated with each deployment
+  shop_id:
+    description: The Shop ID
+    required: true
+  storefront_id:
+    description: The Storefront ID
+    required: true
+  build_command:
+    description: The build command to execute; OXYGEN_ASSET_BASE_URL is available as a reference to Shopify's CDN for this command
     required: true
   commit_message:
     description: The message of the commit
@@ -36,6 +42,22 @@ inputs:
 outputs:
   url:
     description: URL of the deployment
+    value: ${{ steps.oxygenctl-action.outputs.url  }}
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'composite'
+  steps:
+    - run: '${{ github.action_path }}/entrypoint.sh'
+      id: 'oxygenctl-action'
+      shell: 'bash'
+      env:
+        INPUT_SHOP_ID: ${{ inputs.shop_id }}
+        INPUT_STOREFRONT_ID: ${{ inputs.storefront_id }}
+        INPUT_BUILD_COMMAND: ${{ inputs.build_command }}
+        INPUT_COMMIT_MESSAGE: ${{ inputs.commit_message }}
+        INPUT_COMMIT_TIMESTAMP: ${{ inputs.commit_timestamp }}
+        INPUT_OXYGEN_DEPLOYMENT_TOKEN: ${{ inputs.oxygen_deployment_token }}
+        INPUT_OXYGEN_DMS_ADDRESS: ${{ inputs.oxygen_dms_address }}
+        INPUT_OXYGEN_WORKER_DIR: ${{ inputs.oxygen_worker_dir }}
+        INPUT_OXYGEN_CLIENT_DIR: ${{ inputs.oxygen_client_dir }}
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_WORKFLOW_RUN_ID: ${{ inputs.workflow_run_id }}
