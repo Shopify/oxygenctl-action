@@ -25,7 +25,7 @@ jobs:
       - name: Create a Hydrogen app
         run: |
           npm --version
-          npm init @shopify/hydrogen -- -n hydrogen-app -p hydrogen-app -t demo-store
+          npm init @shopify/hydrogen -- -n hydrogen-app -t demo-store
 
       - name: Create config file
         run: |
