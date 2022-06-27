@@ -22,10 +22,10 @@ jobs:
           npm i ulid
           echo "::set-output name=ULID::$(npm exec ulid)"
 
-      - name: Create a hydrogen app
+      - name: Create a Hydrogen app
         run: |
           npm --version
-          npm init @shopify/hydrogen hydrogen-app
+          npm init @shopify/hydrogen -- -n hydrogen-app -p hydrogen-app -t demo-store
 
       - name: Create config file
         run: |
