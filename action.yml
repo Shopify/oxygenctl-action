@@ -27,6 +27,9 @@ inputs:
   oxygen_client_dir:
     description: The name of the directory with compiled client files
     default: dist/client
+  oxygen_health_check:
+    description: Perform a health check at `/__health` before marking deployment as successful? (`true` or `false`)
+    default: false
   path:
     description: The root path of the project to deploy
 outputs:
@@ -47,4 +50,5 @@ runs:
         INPUT_OXYGEN_DMS_ADDRESS: ${{ inputs.oxygen_dms_address }}
         INPUT_OXYGEN_WORKER_DIR: ${{ inputs.oxygen_worker_dir }}
         INPUT_OXYGEN_CLIENT_DIR: ${{ inputs.oxygen_client_dir }}
+        INPUT_OXYGEN_HEALTH_CHECK: ${{ inputs.oxygen_health_check }}
         INPUT_PATH: ${{ inputs.path }}
