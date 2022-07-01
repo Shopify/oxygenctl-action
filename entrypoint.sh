@@ -14,18 +14,12 @@ export OXYGEN_WORKFLOW_ID="${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}"
 
 oxygenctl_bin="$(dirname $0)/oxygenctl"
 
-oxygenctl_args=(
-    --assets-dir "$INPUT_OXYGEN_CLIENT_DIR"
-    --worker-dir "$INPUT_OXYGEN_WORKER_DIR"
-    --dms-address "$INPUT_OXYGEN_DMS_ADDRESS"
-)
-
-if [[ "$INPUT_OXYGEN_HEALTH_CHECK" = "true" ]]; then
-    oxygenctl_args+=(--health-check)
-fi
-
 preview_url="$(
-  $oxygenctl_bin deploy "${oxygenctl_args[@]}"
+  $oxygenctl_bin deploy \
+    --assets-dir="$INPUT_OXYGEN_CLIENT_DIR" \
+    --worker-dir="$INPUT_OXYGEN_WORKER_DIR" \
+    --dms-address="$INPUT_OXYGEN_DMS_ADDRESS" \
+    --health-check="$INPUT_OXYGEN_HEALTH_CHECK"
 )"
 
 echo "::set-output name=url::$preview_url"
