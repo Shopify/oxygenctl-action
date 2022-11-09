@@ -22,4 +22,4 @@ preview_url="$(
     --health-check="$INPUT_OXYGEN_HEALTH_CHECK"
 )"
 
-echo "::set-output name=url::$preview_url"
+echo "url=$preview_url" >> $GITHUB_OUTPUT
