@@ -67,6 +67,7 @@ jobs:
           oxygen_dms_address: ${{ secrets.OXYGEN_DMS_ADDRESS }}
           path: ./hydrogen-app
           build_command: "HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL yarn build"
+          oxygen_health_check: true
 
       - name: Output check
         run: |
