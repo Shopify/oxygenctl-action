@@ -28,7 +28,7 @@ inputs:
     description: The name of the directory with compiled client files
     default: dist/client
   oxygen_health_check:
-    description: Perform a health check at `/__health` before marking deployment as successful? (`true` or `false`)
+    description: Ensure the application is reachable on Oxygen marking deployment as successful? (`true` or `false`)
     default: false
   path:
     description: The root path of the project to deploy
