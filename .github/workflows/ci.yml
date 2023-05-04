@@ -13,14 +13,8 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "16"
           check-latest: true
-
-      - name: Generate deployment ULID
-        id: deployment-id
-        run: |
-          npm i ulid
-          echo "ULID=$(npm exec ulid)" >> $GITHUB_OUTPUT
 
       - name: Setup bot Git user
         run: |
@@ -30,15 +24,7 @@ jobs:
       - name: Create a Hydrogen app
         run: |
           npm --version
-          npm init @shopify/hydrogen -- -n hydrogen-app -t demo-store --ts
-
-      - name: Create config file
-        run: |
-          cd hydrogen-app
-          cat > hydrogen.config.js <<-END
-            ${{ secrets.SHOPIFY_CONFIG }}
-          END
-          cat hydrogen.config.js
+          npm create @shopify/hydrogen@latest -- --template hello-world --language ts --path hydrogen-app --install-deps false
 
       - name: Get yarn cache directory
         id: yarn-cache-dir-path
@@ -52,7 +38,7 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies
-        id: 'install-dependencies'
+        id: "install-dependencies"
         run: |
           cd hydrogen-app
           yarn
@@ -64,7 +50,6 @@ jobs:
           commit_message: ${{ github.event.head_commit.message }}
           commit_timestamp: ${{ github.event.head_commit.timestamp }}
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
-          oxygen_dms_address: ${{ secrets.OXYGEN_DMS_ADDRESS }}
           path: ./hydrogen-app
           build_command: "HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL yarn build"
           oxygen_health_check: true
