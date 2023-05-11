@@ -43,16 +43,17 @@ jobs:
           cd hydrogen-app
           yarn
 
-      - name: oxygenctl Deploy
+      - name: Deploy to Oxygen
         uses: ./
         id: oxygenctl-action
         with:
           commit_message: ${{ github.event.head_commit.message }}
           commit_timestamp: ${{ github.event.head_commit.timestamp }}
-          oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
+          oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_CLI_TEST }}
           path: ./hydrogen-app
           build_command: "HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL yarn build"
           oxygen_health_check: true
+          cloudsmith_token: ${{ secrets.CLOUDSMITH_TOKEN }}
 
       - name: Output check
         run: |

@@ -4,6 +4,9 @@ branding:
   colour: green
 description: 'Deploy JavaScript applications to Shopify Oxygen directly from GitHub'
 inputs:
+  cloudsmith_token:
+    description: The Cloudsmith token to use for accessing private repo
+    required: true
   build_command:
     description: The build command to execute; OXYGEN_ASSET_BASE_URL is available as a reference to Shopify's CDN for this command
     required: true
@@ -20,25 +23,65 @@ inputs:
     required: true
   oxygen_worker_dir:
     description: The name of the directory containing the worker file
-    default: dist/worker
+    default: dist/worker/
   oxygen_client_dir:
     description: The name of the directory with compiled client files
-    default: dist/client
+    default: dist/client/
   oxygen_health_check:
     description: Ensure the application is reachable on Oxygen marking deployment as successful? (`true` or `false`)
     default: false
   path:
     description: The root path of the project to deploy
+  user:
+    description: The user initiating the action
+    required: false
 outputs:
   url:
     description: URL of the deployment
-    value: ${{ steps.oxygenctl-action.outputs.url  }}
+    value: ${{ steps.oxygenctl-action.outputs.url || steps.oxygen-cli-action.outputs.url }}
 runs:
   using: 'composite'
   steps:
-    - run: '${{ github.action_path }}/entrypoint.sh'
-      id: 'oxygenctl-action'
+    - name: Check for OxygenV2 token
       shell: 'bash'
+      id: check_version
+      run: |
+        TOKEN="${{ inputs.oxygen_deployment_token }}"
+        if [[ "$TOKEN" =~ ^[A-Za-z0-9+/]+[=]{0,2}$ ]]; then
+          echo "IS_V2=true" >> $GITHUB_ENV
+        else
+          echo "IS_V2=false" >> $GITHUB_ENV
+        fi
+
+    - name: Add a .npmrc file
+      shell: 'bash'
+      if: env.IS_V2 == 'true'
+      run: |
+        echo "@shopify:registry=https://npm.shopify.io/node/" > ~/.npmrc
+        echo "//npm.shopify.io/node/:_authToken=${NPM_AUTH_TOKEN}" >> ~/.npmrc
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.cloudsmith_token }}
+
+    - name: Build and Publish to Oxygen V2
+      shell: 'bash'
+      id: 'oxygen-cli-action'
+      if: env.IS_V2 == 'true'
+      run: |
+        yarn global add @shopify/oxygen-cli@latest
+        OUTPUT=$(oxygen-cli oxygen:deploy \
+          --rootPath=${{ inputs.path }} \
+          --assetsFolder=${{ inputs.oxygen_client_dir }} \
+          --workerFolder=${{ inputs.oxygen_worker_dir }} | tail -n 1)
+        URL=$(echo "$OUTPUT" | grep -oP 'https://\S+' | sed 's/\.$//')
+        echo "url=$URL" >> $GITHUB_OUTPUT
+      env:
+        OXYGEN_DEPLOYMENT_TOKEN: ${{ inputs.oxygen_deployment_token }}
+
+    - name: Build and Publish to Oxygen V1
+      shell: 'bash'
+      id: 'oxygenctl-action'
+      if: env.IS_V2 == 'false'
+      run: '${{ github.action_path }}/entrypoint.sh'
       env:
         INPUT_BUILD_COMMAND: ${{ inputs.build_command }}
         INPUT_COMMIT_MESSAGE: ${{ inputs.commit_message }}
