@@ -4,9 +4,6 @@ branding:
   colour: green
 description: 'Deploy JavaScript applications to Shopify Oxygen directly from GitHub'
 inputs:
-  cloudsmith_token:
-    description: The Cloudsmith token to use for accessing private repo
-    required: true
   build_command:
     description: The build command to execute; OXYGEN_ASSET_BASE_URL is available as a reference to Shopify's CDN for this command
     required: true
@@ -32,9 +29,6 @@ inputs:
     default: false
   path:
     description: The root path of the project to deploy
-  user:
-    description: The user initiating the action
-    required: false
 outputs:
   url:
     description: URL of the deployment
@@ -53,27 +47,17 @@ runs:
           echo "IS_V2=false" >> $GITHUB_ENV
         fi
 
-    - name: Add a .npmrc file
-      shell: 'bash'
-      if: env.IS_V2 == 'true'
-      run: |
-        echo "@shopify:registry=https://npm.shopify.io/node/" > ~/.npmrc
-        echo "//npm.shopify.io/node/:_authToken=${NPM_AUTH_TOKEN}" >> ~/.npmrc
-      env:
-        NPM_AUTH_TOKEN: ${{ inputs.cloudsmith_token }}
-
     - name: Build and Publish to Oxygen V2
       shell: 'bash'
       id: 'oxygen-cli-action'
       if: env.IS_V2 == 'true'
       run: |
         yarn global add @shopify/oxygen-cli@latest
-        OUTPUT=$(oxygen-cli oxygen:deploy \
+        URL_OUTPUT=$(oxygen-cli oxygen:deploy \
           --rootPath=${{ inputs.path }} \
           --assetsFolder=${{ inputs.oxygen_client_dir }} \
-          --workerFolder=${{ inputs.oxygen_worker_dir }} | tail -n 1)
-        URL=$(echo "$OUTPUT" | grep -oP 'https://\S+' | sed 's/\.$//')
-        echo "url=$URL" >> $GITHUB_OUTPUT
+          --workerFolder=${{ inputs.oxygen_worker_dir }})
+        echo "url=$URL_OUTPUT" >> $GITHUB_OUTPUT
       env:
         OXYGEN_DEPLOYMENT_TOKEN: ${{ inputs.oxygen_deployment_token }}
 
@@ -81,13 +65,14 @@ runs:
       shell: 'bash'
       id: 'oxygenctl-action'
       if: env.IS_V2 == 'false'
-      run: '${{ github.action_path }}/entrypoint.sh'
       env:
-        INPUT_BUILD_COMMAND: ${{ inputs.build_command }}
-        INPUT_COMMIT_MESSAGE: ${{ inputs.commit_message }}
-        INPUT_COMMIT_TIMESTAMP: ${{ inputs.commit_timestamp }}
-        INPUT_OXYGEN_DEPLOYMENT_TOKEN: ${{ inputs.oxygen_deployment_token }}
-        INPUT_OXYGEN_WORKER_DIR: ${{ inputs.oxygen_worker_dir }}
-        INPUT_OXYGEN_CLIENT_DIR: ${{ inputs.oxygen_client_dir }}
-        INPUT_OXYGEN_HEALTH_CHECK: ${{ inputs.oxygen_health_check }}
-        INPUT_PATH: ${{ inputs.path }}
+        OXYGEN_ASSETS_DIR: ${{ inputs.oxygen_client_dir }}
+        OXYGEN_BUILD_COMMAND: ${{ inputs.build_command }}
+        OXYGEN_COMMIT_MESSAGE: ${{ inputs.commit_message || 'No commit message' }}
+        OXYGEN_DEPLOYMENT_TOKEN: ${{ inputs.oxygen_deployment_token }}
+        OXYGEN_WORKFLOW_ID: "${{ github.run_id }}_${{ github.run_attempt }}"
+        OXYGEN_WORKER_DIR: ${{ inputs.oxygen_worker_dir }}
+      run: |
+        [[ -n "${{ inputs.path }}" ]] && cd "${{ inputs.path }}";
+        [[ -z "${{ inputs.commit_timestamp }}" ]] && export OXYGEN_COMMIT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") || export OXYGEN_COMMIT_TIMESTAMP=${{ inputs.commit_timestamp }};
+        echo "url=$($GITHUB_ACTION_PATH/oxygenctl deploy --health-check='${{ inputs.oxygen_health_check }}')" >> $GITHUB_OUTPUT
