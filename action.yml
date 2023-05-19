@@ -47,5 +47,5 @@ runs:
         OXYGEN_WORKER_DIR: ${{ inputs.oxygen_worker_dir }}
       run: |
         [[ -n "${{ inputs.path }}" ]] && cd "${{ inputs.path }}";
-        [[ -z "${{ inputs.commit_timestamp }}" ]] && OXYGEN_COMMIT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") || OXYGEN_COMMIT_TIMESTAMP=${{ inputs.commit_timestamp }};
+        [[ -z "${{ inputs.commit_timestamp }}" ]] && export OXYGEN_COMMIT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") || export OXYGEN_COMMIT_TIMESTAMP=${{ inputs.commit_timestamp }};
         echo "url=$($GITHUB_ACTION_PATH/oxygenctl deploy --health-check='${{ inputs.oxygen_health_check }}')" >> $GITHUB_OUTPUT
