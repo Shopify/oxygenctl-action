@@ -36,22 +36,16 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Get current timestamp
-      shell: 'bash'
-      run: echo "CURRENT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_ENV
     - id: 'oxygenctl-action'
       shell: 'bash'
       env:
         OXYGEN_ASSETS_DIR: ${{ inputs.oxygen_client_dir }}
         OXYGEN_BUILD_COMMAND: ${{ inputs.build_command }}
         OXYGEN_COMMIT_MESSAGE: ${{ inputs.commit_message || 'No commit message' }}
-        OXYGEN_COMMIT_TIMESTAMP: ${{ inputs.commit_timestamp || env.CURRENT_TIMESTAMP }}
         OXYGEN_DEPLOYMENT_TOKEN: ${{ inputs.oxygen_deployment_token }}
         OXYGEN_WORKFLOW_ID: "${{ github.run_id }}_${{ github.run_attempt }}"
         OXYGEN_WORKER_DIR: ${{ inputs.oxygen_worker_dir }}
       run: |
-        if [[ -n "${{ inputs.path }}" ]]; then
-          cd "${{ inputs.path }}"
-        fi
-        set -eu
+        [[ -n "${{ inputs.path }}" ]] && cd "${{ inputs.path }}";
+        [[ -z "${{ inputs.commit_timestamp }}" ]] && OXYGEN_COMMIT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") || OXYGEN_COMMIT_TIMESTAMP=${{ inputs.commit_timestamp }};
         echo "url=$($GITHUB_ACTION_PATH/oxygenctl deploy --health-check='${{ inputs.oxygen_health_check }}')" >> $GITHUB_OUTPUT
