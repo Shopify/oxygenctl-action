@@ -20,7 +20,6 @@ preview_url="$(
   $oxygenctl_bin deploy \
     --assets-dir="$INPUT_OXYGEN_CLIENT_DIR" \
     --worker-dir="$INPUT_OXYGEN_WORKER_DIR" \
-    --dms-address="$INPUT_OXYGEN_DMS_ADDRESS" \
     --health-check="$INPUT_OXYGEN_HEALTH_CHECK"
 )"
 
