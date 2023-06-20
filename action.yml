@@ -20,10 +20,10 @@ inputs:
     required: true
   oxygen_worker_dir:
     description: The name of the directory containing the worker file
-    default: dist/worker/
+    default: dist/worker
   oxygen_client_dir:
     description: The name of the directory with compiled client files
-    default: dist/client/
+    default: dist/client
   oxygen_health_check:
     description: Ensure the application is reachable on Oxygen marking deployment as successful? (`true` or `false`)
     default: false
@@ -54,7 +54,7 @@ runs:
       run: |
         yarn global add @shopify/oxygen-cli@latest
         URL_OUTPUT=$(oxygen-cli oxygen:deploy \
-          --rootPath=${{ inputs.path }} \
+          --path=${{ inputs.path }} \
           --assetsFolder=${{ inputs.oxygen_client_dir }} \
           --workerFolder=${{ inputs.oxygen_worker_dir }})
         echo "url=$URL_OUTPUT" >> $GITHUB_OUTPUT
