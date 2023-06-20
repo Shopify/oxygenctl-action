@@ -43,7 +43,7 @@ jobs:
           cd hydrogen-app
           yarn
 
-      - name: oxygenctl Deploy
+      - name: Deploy to Oxygen
         uses: ./
         id: oxygenctl-action
         with:
