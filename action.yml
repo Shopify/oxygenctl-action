@@ -44,7 +44,7 @@ runs:
         echo "::add-mask::$TOKEN"
 
         if [[ "${TOKEN}" == *":"* ]]; then
-          echo "Double deployment"
+          echo "Multi deployment"
           IFS=':' read -ra token_list <<< "${TOKEN}"
           v1_token=${token_list[0]}
           v2_token=${token_list[1]}
@@ -65,7 +65,6 @@ runs:
             echo "IS_V1=true" >> $GITHUB_ENV
             echo "PRIORITY=v1" >> $GITHUB_ENV
           else
-            echo "Preparing deployment based on configuration response"
             priority=$(echo "$configuration_response" | jq -r .priority)
             echo "PRIORITY=${priority}" >> $GITHUB_ENV
             echo "IS_V2=$(echo "$configuration_response" | jq -r .v2_enabled)" >> $GITHUB_ENV
@@ -101,7 +100,7 @@ runs:
           mkdir oxygen_v2
           rsync -a ./* ./oxygen_v2/ --exclude 'oxygen_v2' --exclude 'node_modules'
           {
-            echo "Deploying"
+            echo "Deploying to Oxygen..."
             yarn global add @shopify/oxygen-cli@latest
             build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
             oxygen_v2_command="oxygen-cli oxygen:deploy \
@@ -120,7 +119,7 @@ runs:
 
         if [ "${{ env.IS_V1 }}" == "true" ]; then
           {
-            echo "Deploying"
+            echo "Deploying to Oxygen..."
             [[ -z "${{ inputs.commit_timestamp }}" ]] && export OXYGEN_COMMIT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") || export OXYGEN_COMMIT_TIMESTAMP=${{ inputs.commit_timestamp }}
             oxygen_v1_command="$GITHUB_ACTION_PATH/oxygenctl deploy --health-check=${{ inputs.oxygen_health_check }}"
             if [[ "${{ env.PRIORITY }}" == "v1" ]]; then
