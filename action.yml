@@ -95,6 +95,7 @@ runs:
         OXYGEN_WORKER_DIR: ${{ inputs.oxygen_worker_dir }}
       run: |
         [[ -n "${{ inputs.path }}" ]] && cd "${{ inputs.path }}"
+        err="error_output.txt"
 
         if [ "${{ env.IS_V2 }}" == "true" ]; then
           mkdir oxygen_v2
@@ -127,7 +128,7 @@ runs:
             [[ -z "${{ inputs.commit_timestamp }}" ]] && export OXYGEN_COMMIT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") || export OXYGEN_COMMIT_TIMESTAMP=${{ inputs.commit_timestamp }}
             oxygen_v1_command="$GITHUB_ACTION_PATH/oxygenctl deploy --health-check=${{ inputs.oxygen_health_check }}"
             if [[ "${{ env.PRIORITY }}" == "v1" ]]; then
-              echo "url=$(OXYGEN_DEPLOYMENT_TOKEN=${{ steps.check_version.outputs.v1_token }} $oxygen_v1_command)" 1>>$GITHUB_OUTPUT 2>>$err
+              echo "url=$(OXYGEN_DEPLOYMENT_TOKEN=${{ steps.check_version.outputs.v1_token }} $oxygen_v1_command)" 1>>$GITHUB_OUTPUT 2>$err
               if grep -q "exit status 1" $err; then
                   echo "The command failed"
                   exit 1
