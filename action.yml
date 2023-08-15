@@ -26,7 +26,10 @@ inputs:
     default: dist/client
   oxygen_health_check:
     description: Ensure the application is reachable on Oxygen marking deployment as successful? (`true` or `false`)
-    default: false
+    default: true
+  oxygen_health_check_max_duration:
+    description: The maximum duration in seconds to wait for the health check to pass
+    default: 180
   path:
     description: The root path of the project to deploy
 outputs:
@@ -107,7 +110,11 @@ runs:
                   --path=${{ inputs.path }} \
                   --assetsFolder=${{ inputs.oxygen_client_dir }} \
                   --workerFolder=${{ inputs.oxygen_worker_dir }} \
+                  --healthCheckMaxDuration=${{ inputs.oxygen_health_check_max_duration }} \
                   --token=${{ steps.check_version.outputs.v2_token }}"
+            if [ "${{ inputs.oxygen_health_check }}" == "false" ]; then
+              oxygen_v2_command+=" --skipHealthCheck"
+            fi
 
             if [[ "${{ env.PRIORITY }}" == "v2" ]]; then
               echo "url=$(cd oxygen_v2 && ln -s ../node_modules node_modules && $oxygen_v2_command --buildCommand="${build_command_filtered}" )" >> $GITHUB_OUTPUT
