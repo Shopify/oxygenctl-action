@@ -26,7 +26,7 @@ inputs:
     default: dist/client
   oxygen_health_check:
     description: Ensure the application is reachable on Oxygen marking deployment as successful? (`true` or `false`)
-    default: true
+    default: false
   oxygen_health_check_max_duration:
     description: The maximum duration in seconds to wait for the health check to pass
     default: 180
