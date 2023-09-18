@@ -96,6 +96,7 @@ runs:
         OXYGEN_COMMIT_MESSAGE: ${{ inputs.commit_message || 'No commit message' }}
         OXYGEN_WORKFLOW_ID: "${{ github.run_id }}_${{ github.run_attempt }}"
         OXYGEN_WORKER_DIR: ${{ inputs.oxygen_worker_dir }}
+        NODE_ENV: production
       run: |
         [[ -n "${{ inputs.path }}" ]] && cd "${{ inputs.path }}"
 
@@ -110,9 +111,8 @@ runs:
           rsync -a ./* ./oxygen_v2/ --exclude 'oxygen_v2' --exclude 'node_modules'
           {
             echo "Deploying to Oxygen..."
-            yarn global add @shopify/oxygen-cli@latest
             build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
-            oxygen_v2_command="oxygen-cli oxygen:deploy \
+            oxygen_v2_command="npx @shopify/oxygen-cli@latest oxygen:deploy \
                   --path=${{ inputs.path }} \
                   --assetsFolder=${{ inputs.oxygen_client_dir }} \
                   --workerFolder=${{ inputs.oxygen_worker_dir }} \
