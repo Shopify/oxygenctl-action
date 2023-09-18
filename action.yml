@@ -24,10 +24,10 @@ inputs:
   oxygen_client_dir:
     description: The name of the directory with compiled client files
     default: dist/client
-  oxygen_health_check:
-    description: Ensure the application is reachable on Oxygen marking deployment as successful? (`true` or `false`)
+  oxygen_deployment_verification:
+    description: Verify the worker deployment to Oxygen has been completed (`true` or `false`)
     default: true
-  oxygen_health_check_max_duration:
+  oxygen_deployment_verification_max_duration:
     description: The maximum duration in seconds to wait for the health check to pass
     default: 180
   path:
@@ -116,10 +116,10 @@ runs:
                   --path=${{ inputs.path }} \
                   --assetsFolder=${{ inputs.oxygen_client_dir }} \
                   --workerFolder=${{ inputs.oxygen_worker_dir }} \
-                  --healthCheckMaxDuration=${{ inputs.oxygen_health_check_max_duration }} \
+                  --verificationMaxDuration=${{ inputs.oxygen_deployment_verification_max_duration }} \
                   --token=${{ steps.check_version.outputs.v2_token }}"
-            if [ "${{ inputs.oxygen_health_check }}" == "false" ]; then
-              oxygen_v2_command+=" --skipHealthCheck"
+            if [ "${{ inputs.oxygen_deployment_verification }}" == "false" ]; then
+              oxygen_v2_command+=" --skipVerification"
             fi
 
             if [[ "${{ env.PRIORITY }}" == "v2" ]]; then
@@ -145,7 +145,7 @@ runs:
           {
             echo "Deploying to Oxygen..."
             [[ -z "${{ inputs.commit_timestamp }}" ]] && export OXYGEN_COMMIT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") || export OXYGEN_COMMIT_TIMESTAMP=${{ inputs.commit_timestamp }}
-            oxygen_v1_command="$GITHUB_ACTION_PATH/oxygenctl deploy --health-check=${{ inputs.oxygen_health_check }}"
+            oxygen_v1_command="$GITHUB_ACTION_PATH/oxygenctl deploy --deployment-verification=${{ inputs.oxygen_deployment_verification }}"
 
             if [[ "${{ env.PRIORITY }}" == "v1" ]]; then
               output=$(OXYGEN_DEPLOYMENT_TOKEN=${{ steps.check_version.outputs.v1_token }} $oxygen_v1_command)
