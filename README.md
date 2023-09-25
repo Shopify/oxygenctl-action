@@ -18,7 +18,7 @@ This action accepts the following inputs:
 - `oxygen_deployment_token`: The Oxygen deployment token issued by Shopify. This is a required input.
 - `oxygen_worker_dir`: The name of the directory containing the worker file. Defaults to `dist/worker`.
 - `oxygen_client_dir`: The name of the directory with compiled asset files to be uploaded to the CDN. Defaults to `dist/client`.
-- `oxygen_health_check`: Determines whether to ensure the preview url is accessible on Oxygen before marking the workflow as successful. This does **not** mean the deployment wasn't successful, but that the page may not be loading properly. The deployment status in the Hydrogen Storefronts channel will reflect the status of the deployment, not the health of the deployment. Accepts `true` or `false`. Defaults to `true`.
+- `oxygen_deployment_verification`: Verifies successful deployment of the worker to Oxygen. Accepts `true` or `false`. Defaults to `true`. Note: This verification checks the status of the deployment, not the health of the application. If set to `true`, the workflow will only be marked as successful if the worker deployment to Oxygen has been verified to be routable. Also note that the workflow status and the status of the deployment in the Hydrogen storefronts channel may differ if the verification check fails.
 - `path`: The root path of the project to deploy.
 
 ### Output
