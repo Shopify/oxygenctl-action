@@ -112,6 +112,7 @@ runs:
           {
             echo "Deploying to Oxygen..."
             build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
+            export UNSAFE_OXYGEN_DEPLOYMENT_URL="https://single-deploy-v2.tunnel.up.dev"
             oxygen_v2_command="npx @shopify/oxygen-cli@latest oxygen:deploy \
                   --path=${{ inputs.path }} \
                   --assetsFolder=${{ inputs.oxygen_client_dir }} \
