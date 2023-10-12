@@ -60,7 +60,7 @@ runs:
           shop_id=$(echo "${v2_token}" | base64 -d | jq -r '.namespace')
           echo "Fetching configuration for shop $shop_id"
           hydrogen_configuration_url="${UNSAFE_HYDROGEN_CONFIGURATION_URL:-https://hydrogen-storefronts.shopifyapps.com}"
-          configuration_response=$(curl -s -f "${hydrogen_configuration_url}/api/admin/configuration/shop/${shop_id}" | jq .deployment 2>/dev/null)
+          configuration_response=$(curl -s -k -f "${hydrogen_configuration_url}/api/admin/configuration/shop/${shop_id}" | jq .deployment 2>/dev/null)
           set -e
 
           if [[ -z "$configuration_response" ]]; then
