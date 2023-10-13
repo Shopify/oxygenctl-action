@@ -108,7 +108,7 @@ runs:
 
         if [ "${{ env.IS_V2 }}" == "true" ]; then
           mkdir oxygen_v2
-          rsync -a ./* ./oxygen_v2/ --exclude 'oxygen_v2' --exclude 'node_modules'
+          rsync -a ./ ./oxygen_v2/ --exclude 'oxygen_v2' --exclude 'node_modules'
           {
             echo "Deploying to Oxygen..."
             build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
