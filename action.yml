@@ -108,7 +108,7 @@ runs:
 
         if [ "${{ env.IS_V2 }}" == "true" ]; then
           mkdir oxygen_v2
-          rsync -a ./ ./oxygen_v2/ --exclude 'oxygen_v2' --exclude 'node_modules'
+          rsync -a ./ ./oxygen_v2/ --exclude 'oxygen_v2'
           {
             echo "Deploying to Oxygen..."
             build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
@@ -122,7 +122,7 @@ runs:
             fi
 
             if [[ "${{ env.PRIORITY }}" == "v2" ]]; then
-              output=$(cd oxygen_v2 && ln -s ../node_modules node_modules && $oxygen_v2_command --buildCommand="${build_command_filtered}")
+              output=$(cd oxygen_v2 && $oxygen_v2_command --buildCommand="${build_command_filtered}")
               exit_code=$?
 
               if [ $exit_code -eq 0 ]; then
@@ -131,7 +131,7 @@ runs:
                 exit $exit_code
               fi
             else
-              $(cd oxygen_v2 && ln -s ../node_modules node_modules && $oxygen_v2_command --buildCommand="${build_command_filtered}" &> /dev/null)
+              $(cd oxygen_v2 && $oxygen_v2_command --buildCommand="${build_command_filtered}" &> /dev/null)
             fi
           } &
           pids+=($!)
