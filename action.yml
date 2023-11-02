@@ -98,8 +98,6 @@ runs:
         OXYGEN_WORKER_DIR: ${{ inputs.oxygen_worker_dir }}
         NODE_ENV: production
       run: |
-        [[ -n "${{ inputs.path }}" ]] && cd "${{ inputs.path }}"
-
         # We need to run multiple processes at once and are going to handle
         # exiting manually
         set +e
@@ -113,6 +111,7 @@ runs:
             echo "Deploying to Oxygen..."
             build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
             oxygen_v2_command="npx @shopify/oxygen-cli@latest oxygen:deploy \
+                  --path=oxygen_v2/${{ inputs.path }} \
                   --assetsFolder=${{ inputs.oxygen_client_dir }} \
                   --workerFolder=${{ inputs.oxygen_worker_dir }} \
                   --verificationMaxDuration=${{ inputs.oxygen_deployment_verification_max_duration }} \
@@ -122,7 +121,7 @@ runs:
             fi
 
             if [[ "${{ env.PRIORITY }}" == "v2" ]]; then
-              output=$(cd oxygen_v2 && $oxygen_v2_command --buildCommand="${build_command_filtered}")
+              output=$($oxygen_v2_command --buildCommand="${build_command_filtered}")
               exit_code=$?
 
               if [ $exit_code -eq 0 ]; then
@@ -131,7 +130,7 @@ runs:
                 exit $exit_code
               fi
             else
-              $(cd oxygen_v2 && $oxygen_v2_command --buildCommand="${build_command_filtered}" &> /dev/null)
+              $($oxygen_v2_command --buildCommand="${build_command_filtered}" &> /dev/null)
             fi
           } &
           pids+=($!)
@@ -141,6 +140,7 @@ runs:
         fi
 
         if [ "${{ env.IS_V1 }}" == "true" ]; then
+          [[ -n "${{ inputs.path }}" ]] && cd "${{ inputs.path }}"
           {
             echo "Deploying to Oxygen..."
             [[ -z "${{ inputs.commit_timestamp }}" ]] && export OXYGEN_COMMIT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") || export OXYGEN_COMMIT_TIMESTAMP=${{ inputs.commit_timestamp }}
