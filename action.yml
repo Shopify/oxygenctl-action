@@ -26,7 +26,7 @@ inputs:
     default: dist/client
   oxygen_deployment_verification:
     description: Verify the worker deployment to Oxygen has been completed (`true` or `false`)
-    default: false
+    default: true
   oxygen_deployment_verification_max_duration:
     description: The maximum duration in seconds to wait for the health check to pass
     default: 180
