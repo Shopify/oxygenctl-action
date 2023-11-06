@@ -110,7 +110,7 @@ runs:
           {
             echo "Deploying to Oxygen..."
             build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
-            oxygen_v2_command="npx @shopify/oxygen-cli@latest oxygen:deploy \
+            oxygen_v2_command="npm exec --package=@shopify/oxygen-cli@latest -- oxygen-cli oxygen:deploy \
                   --path=${{ inputs.path }} \
                   --assetsFolder=${{ inputs.oxygen_client_dir }} \
                   --workerFolder=${{ inputs.oxygen_worker_dir }} \
