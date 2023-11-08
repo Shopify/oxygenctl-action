@@ -105,6 +105,11 @@ runs:
         pids=()
 
         if [ "${{ env.IS_V2 }}" == "true" ]; then
+          orig=$PWD
+          echo $PWD
+          cd ~
+          echo $PWD
+          cd $orig
           mkdir oxygen_v2
           rsync -a ./ ./oxygen_v2/ --exclude 'oxygen_v2'
           {
