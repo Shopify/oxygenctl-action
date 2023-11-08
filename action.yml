@@ -1,8 +1,8 @@
-name: 'Deploy app to Shopify Oxygen'
+name: "Deploy app to Shopify Oxygen"
 branding:
   icon: shopping-bag
   colour: green
-description: 'Deploy JavaScript applications to Shopify Oxygen directly from GitHub'
+description: "Deploy JavaScript applications to Shopify Oxygen directly from GitHub"
 inputs:
   build_command:
     description: The build command to execute; OXYGEN_ASSET_BASE_URL is available as a reference to Shopify's CDN for this command
@@ -37,10 +37,10 @@ outputs:
     description: URL of the deployment
     value: ${{ steps.oxygenctl-action.outputs.url || steps.oxygen-cli-action.outputs.url }}
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Check Oxygen version
-      shell: 'bash'
+      shell: "bash"
       id: check_version
       run: |
         TOKEN="${{ inputs.oxygen_deployment_token }}"
@@ -88,8 +88,8 @@ runs:
         fi
 
     - name: Build and Publish to Oxygen
-      shell: 'bash'
-      id: 'oxygenctl-action'
+      shell: "bash"
+      id: "oxygenctl-action"
       env:
         OXYGEN_ASSETS_DIR: ${{ inputs.oxygen_client_dir }}
         OXYGEN_BUILD_COMMAND: ${{ inputs.build_command }}
@@ -110,7 +110,7 @@ runs:
           {
             echo "Deploying to Oxygen..."
             build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
-            oxygen_v2_command="npm exec --package=@shopify/oxygen-cli@latest -- oxygen-cli oxygen:deploy \
+            oxygen_v2_command="npm exec --package=@shopify/oxygen-cli@2.5.0 -- oxygen-cli oxygen:deploy \
                   --path=${{ inputs.path }} \
                   --assetsFolder=${{ inputs.oxygen_client_dir }} \
                   --workerFolder=${{ inputs.oxygen_worker_dir }} \
