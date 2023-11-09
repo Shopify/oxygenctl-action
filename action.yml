@@ -65,8 +65,8 @@ runs:
 
           if [[ -z "$configuration_response" ]]; then
             echo "Configuration response is empty"
-            echo "IS_V1=true" >> $GITHUB_ENV
-            echo "PRIORITY=v1" >> $GITHUB_ENV
+            echo "IS_V2=true" >> $GITHUB_ENV
+            echo "PRIORITY=v2" >> $GITHUB_ENV
           else
             priority=$(echo "$configuration_response" | jq -r .priority)
             echo "PRIORITY=${priority}" >> $GITHUB_ENV
@@ -80,10 +80,8 @@ runs:
             echo "PRIORITY=v2" >> $GITHUB_ENV
             echo "v2_token=${TOKEN}" >> $GITHUB_OUTPUT
           else
-            echo "Token is in V1 format"
-            echo "IS_V1=true" >> $GITHUB_ENV
-            echo "PRIORITY=v1" >> $GITHUB_ENV
-            echo "v1_token=${TOKEN}" >> $GITHUB_OUTPUT
+            echo "Your repository is out of date, please disconnect and reconnect your storefront on Shopify"
+            exit 1
           fi
         fi
 
