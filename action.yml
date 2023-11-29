@@ -73,7 +73,7 @@ runs:
       run: |
         echo "Deploying to Oxygen..."
         build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
-        oxygen_command="npm exec --package=@shopify/oxygen-cli@2.6.2 -- oxygen-cli oxygen:deploy \
+        oxygen_command="npm exec --package=@shopify/oxygen-cli@3.0.0 -- oxygen-cli oxygen:deploy \
               --path=${{ inputs.path }} \
               --assetsFolder=${{ inputs.oxygen_client_dir }} \
               --workerFolder=${{ inputs.oxygen_worker_dir }} \
@@ -86,20 +86,14 @@ runs:
         output=$($oxygen_command --buildCommand="${build_command_filtered}")
         exit_code=$?
 
-        if jq -e . >/dev/null 2>&1 <<<"$output"; then
-          echo "url=$(jq -r '.url' <<<"$output")" >> "$GITHUB_OUTPUT"
-
-          has_token=$(jq 'has("authBypassToken")' <<<"$output")
-
-          if [ "$has_token" == 'true' ]; then
-            echo "auth_bypass_token=$(jq -r '.authBypassToken' <<<"$output")" >> "$GITHUB_OUTPUT"
-          fi
-        else
-          echo "url=$output" >> "$GITHUB_OUTPUT"
+        if [ $exit_code -ne 0 ]; then
+          exit $exit_code
         fi
 
-        if [ $exit_code -eq 0 ]; then
-          echo "url=$output" >> $GITHUB_OUTPUT
-        else
-          exit $exit_code
+        echo "url=$(jq -r '.url' <<<"$output")" >> "$GITHUB_OUTPUT"
+
+        has_token=$(jq 'has("authBypassToken")' <<<"$output")
+
+        if [ "$has_token" == 'true' ]; then
+          echo "auth_bypass_token=$(jq -r '.authBypassToken' <<<"$output")" >> "$GITHUB_OUTPUT"
         fi
