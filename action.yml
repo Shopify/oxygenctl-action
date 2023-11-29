@@ -30,6 +30,9 @@ inputs:
   oxygen_deployment_verification_max_duration:
     description: The maximum duration in seconds to wait for the health check to pass
     default: 180
+  generate_auth_bypass_token:
+    description: Generate an auth bypass token for end-to-end testing (`true` or `false`)
+    default: false
   path:
     description: The root path of the project to deploy
 outputs:
@@ -81,6 +84,10 @@ runs:
               --token=${{ steps.check_version.outputs.token }}"
         if [ "${{ inputs.oxygen_deployment_verification }}" == "false" ]; then
           oxygen_command+=" --skipVerification"
+        fi
+
+        if [ "${{ inputs.generate_auth_bypass_token }}" == "true" ]; then
+          oxygen_command+=" --generateAuthBypassToken"
         fi
 
         output=$($oxygen_command --buildCommand="${build_command_filtered}")
