@@ -19,6 +19,7 @@ This action accepts the following inputs:
 - `oxygen_worker_dir`: The name of the directory containing the worker file. Defaults to `dist/worker`.
 - `oxygen_client_dir`: The name of the directory with compiled asset files to be uploaded to the CDN. Defaults to `dist/client`.
 - `oxygen_deployment_verification`: Verifies successful deployment of the worker to Oxygen. Accepts `true` or `false`. Defaults to `true`. Note: This verification checks the status of the deployment, not the health of the application. If set to `true`, the workflow will only be marked as successful if the worker deployment to Oxygen has been verified to be routable. Also note that the workflow status and the status of the deployment in the Hydrogen storefronts channel may differ if the verification check fails.
+- `oxygen_deployment_verification_max_duration`: The maximum duration in seconds to wait for the health check to pass. Defaults to `180`.
 - `path`: The root path of the project to deploy.
 
 ### Output
