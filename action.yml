@@ -73,12 +73,20 @@ runs:
       run: |
         echo "Deploying to Oxygen..."
         build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
-        oxygen_command="npm exec --package=@shopify/oxygen-cli@4 -- oxygen-cli oxygen:deploy \
-              --path=${{ inputs.path }} \
-              --assetsFolder=${{ inputs.oxygen_client_dir }} \
-              --workerFolder=${{ inputs.oxygen_worker_dir }} \
-              --verificationMaxDuration=${{ inputs.oxygen_deployment_verification_max_duration }} \
-              --token=${{ steps.check_version.outputs.token }}"
+  
+        if command -v pnpm > /dev/null 2>&1; then
+          exec_command="pnpm dlx @shopify/oxygen-cli@4"
+        else
+          exec_command="npm exec --package=@shopify/oxygen-cli@4 -- oxygen-cli"
+        fi
+
+        oxygen_command="$exec_command oxygen:deploy \
+          --path=${{ inputs.path }} \
+          --assetsFolder=${{ inputs.oxygen_client_dir }} \
+          --workerFolder=${{ inputs.oxygen_worker_dir }} \
+          --verificationMaxDuration=${{ inputs.oxygen_deployment_verification_max_duration }} \
+          --token=${{ steps.check_version.outputs.token }}"
+
         if [ "${{ inputs.oxygen_deployment_verification }}" == "false" ]; then
           oxygen_command+=" --skipVerification"
         fi
