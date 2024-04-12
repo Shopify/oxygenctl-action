@@ -18,6 +18,7 @@ inputs:
   oxygen_deployment_token:
     description: The JWT deployment token
     required: true
+    deprecationMessage: The shopify/oxygenctl-action is being deprecated and all merchants are encouraged to migrate to the Hydrogen CLI deploy command. To use the deploy command, upgrade your Hydrogen project to use Hydrogen CLI v7.0.0 or later. See our example GitHub workflow https://shopify.dev/docs/custom-storefronts/hydrogen/deployments/github#oxygen-github-action
   oxygen_worker_dir:
     description: The name of the directory containing the worker file
     default: dist/worker
@@ -73,7 +74,7 @@ runs:
       run: |
         echo "Deploying to Oxygen..."
         build_command_filtered=$(echo '${{ inputs.build_command }}' | sed 's/HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL //g')
-        oxygen_command="npm exec --package=@shopify/oxygen-cli@4 -- oxygen-cli oxygen:deploy \
+        oxygen_command="npm exec --package=@shopify/oxygen-cli@3 -- oxygen-cli oxygen:deploy \
               --path=${{ inputs.path }} \
               --assetsFolder=${{ inputs.oxygen_client_dir }} \
               --workerFolder=${{ inputs.oxygen_worker_dir }} \
