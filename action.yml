@@ -43,29 +43,6 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Check Oxygen version
-      shell: 'bash'
-      id: check_version
-      run: |
-        TOKEN="${{ inputs.oxygen_deployment_token }}"
-        echo "::add-mask::$TOKEN"
-
-        if [[ "${TOKEN}" == *":"* ]]; then
-          echo "Multi token"
-          IFS=':' read -ra token_list <<< "${TOKEN}"
-          token=${token_list[1]}
-          echo "::add-mask::$token"
-          echo "token=$token" >> $GITHUB_OUTPUT
-        else
-          if [[ "${TOKEN}" =~ ^[A-Za-z0-9+/]+[=]{0,2}$ ]]; then
-            echo "Token is in V2 format"
-            echo "token=${TOKEN}" >> $GITHUB_OUTPUT
-          else
-            echo "Your repository is out of date, please disconnect and reconnect your storefront on Shopify"
-            exit 1
-          fi
-        fi
-
     - name: Build and Publish to Oxygen
       shell: 'bash'
       id: 'oxygen-cli-action'
@@ -79,7 +56,7 @@ runs:
               --assetsFolder=${{ inputs.oxygen_client_dir }} \
               --workerFolder=${{ inputs.oxygen_worker_dir }} \
               --verificationMaxDuration=${{ inputs.oxygen_deployment_verification_max_duration }} \
-              --token=${{ steps.check_version.outputs.token }}"
+              --token=${{ inputs.oxygen_deployment_token }}"
         if [ "${{ inputs.oxygen_deployment_verification }}" == "false" ]; then
           oxygen_command+=" --skipVerification"
         fi
