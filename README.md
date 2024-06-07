@@ -2,9 +2,9 @@
 
 ## Deprecation notice
 
-Earlier this year (2024), we introduced the [deploy command](https://shopify.dev/docs/api/shopify-cli/hydrogen/hydrogen-deploy), which makes it simpler and more flexible to deploy to Oxygen from any context — including from CI/CD platforms other than GitHub.
+Earlier this year (2024), we introduced the [hydrogen deploy command](https://shopify.dev/docs/api/shopify-cli/hydrogen/hydrogen-deploy), which makes it simpler and more flexible to deploy to Oxygen from any context — including from CI/CD platforms other than GitHub.
 
-The `deploy` command is now replacing Oxygen's previous deployment method, which uses two GitHub Actions: `shopify/oxygenctl-action` (this repo) and [shopify/github-deployment-action](https://github.com/Shopify/github-deployment-action). These actions are now deprecated, and we encourage everyone to switch to the `deploy` command.
+The `hydrogen deploy` command is now replacing Oxygen's previous deployment method, which uses two GitHub Actions: `shopify/oxygenctl-action` (this repo) and [shopify/github-deployment-action](https://github.com/Shopify/github-deployment-action). These actions are now deprecated, and we encourage everyone to switch to the `deploy` command.
 
 Many developers have already received a pull request from Shopify’s GitHub bot to make the required updates automatically, but you can also update manually if required. In most cases, it results in a much simpler workflow:
 
