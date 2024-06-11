@@ -23,7 +23,7 @@ jobs:
 
       - name: Create a Hydrogen app
         run: |
-          npm create @shopify/hydrogen@latest -- --template hello-world --language ts --path hydrogen-app --install-deps true
+          npm create @shopify/hydrogen@latest -- --template demo-store --language ts --path hydrogen-app --install-deps true
 
       - name: Cache node modules
         id: cache-npm
