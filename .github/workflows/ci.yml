@@ -23,8 +23,7 @@ jobs:
 
       - name: Create a Hydrogen app
         run: |
-          npm --version
-          npm create @shopify/hydrogen@latest -- --template hello-world --language ts --path hydrogen-app --install-deps false
+          npm create @shopify/hydrogen@latest -- --template hello-world --language ts --path hydrogen-app --install-deps true
 
       - name: Cache node modules
         id: cache-npm
@@ -42,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd hydrogen-app
-          npm install
+          npm install @graphql-codegen/cli @shopify/hydrogen-codegen --save-dev
 
       - name: Deploy to Oxygen
         uses: ./
@@ -51,8 +50,9 @@ jobs:
           commit_message: ${{ github.event.head_commit.message }}
           commit_timestamp: ${{ github.event.head_commit.timestamp }}
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
+          oxygen_worker_dir: dist/server
           path: ./hydrogen-app
-          build_command: "HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL yarn build"
+          build_command: "npm run build"
 
       - name: Output check
         run: |
