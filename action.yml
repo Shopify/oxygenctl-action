@@ -43,6 +43,13 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - name: Collect metrics
+      shell: 'bash'
+      run: |
+        endpoint="https://metrics.myshopify.dev"
+        metric='{"events":[{"name": "oxygen_platform.oxygenctl_action_usage", "type": "count", "value": 1}]}'
+        curl -s -X POST -H "Content-Type: application/json" -d "$metric" "$endpoint"
+
     - name: Build and Publish to Oxygen
       shell: 'bash'
       id: 'oxygen-cli-action'
