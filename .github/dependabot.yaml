@@ -1,6 +1,9 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
+    groups:
+      minor_versions:
+        update-types: ["minor", "patch"]
     directory: "/"
     schedule:
       interval: weekly
